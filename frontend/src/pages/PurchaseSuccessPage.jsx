@@ -5,7 +5,6 @@ import axiosInstance from "../../lib/axios";
 import { useCartStore } from "../../store/useCartStore";
 import ReactConfetti from "react-confetti";
 import LoadingSpinner from "../components/LoadingSpinner";
-// import Confetti from "react-confetti";
 
 const PurchaseSuccessPage = () => {
   const [isProcessing, setIsProcessing] = useState(true);

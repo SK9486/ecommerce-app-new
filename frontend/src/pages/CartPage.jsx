@@ -4,7 +4,7 @@ import { ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 import CartItem from "../components/CartItem";
 import OrderSummary from "../components/OrderSummary";
-import PeopleAlsoBought from "../components/PeopleAlsoBought.JSX";
+import PeopleAlsoBought from "../components/PeopleAlsoBought";
 import GiftCouponCard from "../components/GiftCouponCard";
 
 const CartPage = () => {
