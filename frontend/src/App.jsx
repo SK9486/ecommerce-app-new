@@ -6,9 +6,9 @@ import Navbar from "./components/Navbar";
 import CategoryPage from "./pages/CategoryPage";
 import CartPage from "./pages/CartPage";
 import { Toaster } from "react-hot-toast";
-import { useUserStore } from "../store/useUserStore";
-import { useEffect } from "react";
-import { useCartStore } from "../store/useCartStore";
+import { useUserStore } from "../store/useUserStore"; // Adjusted path
+import { useEffect, useState } from "react";
+import { useCartStore } from "../store/useCartStore"; // Adjusted path
 import AdminPage from "./pages/AdminPage";
 import LoadingSpinner from "./components/LoadingSpinner";
 import PurchaseSuccessPage from "./pages/PurchaseSuccessPage";
@@ -18,8 +18,31 @@ const App = () => {
   const { user, checkAuth, checkingAuth } = useUserStore();
   const { getCartItems } = useCartStore();
 
+  // Add a timeout state to handle cases where checkAuth hangs
+  const [authTimeout, setAuthTimeout] = useState(false);
+
   useEffect(() => {
-    checkAuth();
+    // Run checkAuth and set a timeout to prevent infinite loading
+    const authCheck = async () => {
+      try {
+        await checkAuth();
+      } catch (error) {
+        console.error("Auth check failed in App:", error);
+      }
+    };
+
+    authCheck();
+
+    // Set a timeout to stop loading after 5 seconds if checkAuth hangs
+    const timeout = setTimeout(() => {
+      if (checkingAuth) {
+        console.warn("Auth check timed out, proceeding anyway...");
+        setAuthTimeout(true);
+      }
+    }, 5000); // 5-second timeout
+
+    // Cleanup timeout on unmount or when checkAuth completes
+    return () => clearTimeout(timeout);
   }, [checkAuth]);
 
   useEffect(() => {
@@ -27,7 +50,8 @@ const App = () => {
     getCartItems();
   }, [getCartItems, user]);
 
-  if (checkingAuth) {
+  // Show loading spinner only while checkingAuth is true and timeout hasn't occurred
+  if (checkingAuth && !authTimeout) {
     return <LoadingSpinner />;
   }
 
