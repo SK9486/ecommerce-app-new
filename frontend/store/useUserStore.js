@@ -72,15 +72,3 @@ export const useUserStore = create((set, get) => ({
     }
   },
 }));
-
-// Axios Interceptor
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      useUserStore.getState().logout();
-      toast.error("Session expired. Please log in again.");
-    }
-    return Promise.reject(error);
-  }
-);
